@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bienvenido a Steam — Tienda Digital de Videojuegos</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- BARRA GLOBAL SUPERIOR -->
+  <header class="global-header">
+    <div class="container global-header-inner">
+      <div class="brand-group">
+        <a href="#tienda" class="steam-logo" data-nav="store" aria-label="Inicio de Steam">
+          <svg viewBox="0 0 36 36" width="36" height="36" fill="none" aria-hidden="true">
+            <circle cx="18" cy="18" r="17" fill="#171a21" stroke="#66c0f4" stroke-width="2"/>
+            <circle cx="23.5" cy="13.5" r="4.5" stroke="#c7d5e0" stroke-width="2.2"/>
+            <circle cx="23.5" cy="13.5" r="2" fill="#66c0f4"/>
+            <path d="M7 22.5L14.5 25.5L20.5 16.5" stroke="#c7d5e0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="14.5" cy="25.5" r="3.2" fill="#1b2838" stroke="#c7d5e0" stroke-width="2"/>
+          </svg>
+          <span class="brand-text">STEAM</span>
+        </a>
+
+        <nav class="main-nav" aria-label="Navegación principal">
+          <button class="nav-link active" data-nav="store">TIENDA</button>
+          <button class="nav-link" data-nav="library">BIBLIOTECA <span class="nav-pill" id="nav-library-count">2</span></button>
+          <button class="nav-link" data-nav="community">COMUNIDAD</button>
+          <button class="nav-link" data-nav="wallet">CARTERA</button>
+        </nav>
+      </div>
+
+      <div class="user-actions">
+        <button class="install-steam-btn" id="btn-install-client">
+          <span class="icon">⬇</span> Instalar Steam
+        </button>
+        <div class="wallet-chip" data-nav="wallet" title="Ver detalles de la Cartera Steam">
+          <span class="wallet-label">Cartera:</span>
+          <span class="wallet-amount" id="header-wallet-balance">$60.00</span>
+        </div>
+        <div class="user-profile-pill">
+          <div class="avatar-box">GG</div>
+          <div class="user-meta">
+            <span class="username">GamerPro_LATAM</span>
+            <span class="user-status">En línea</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SUB-BARRA DE TIENDA (DESEADOS, CARRO Y BUSCADOR) -->
+  <div class="store-subbar">
+    <div class="container store-subbar-inner">
+      <div class="subbar-links">
+        <button class="sub-link" data-nav="store" data-scroll="featured-section">Destacados</button>
+        <button class="sub-link" data-nav="store" data-scroll="offers-section">Ofertas especiales</button>
+        <button class="sub-link" data-nav="store" data-scroll="catalog-section">Categorías</button>
+        <button class="sub-link" data-nav="library">Mis juegos</button>
+      </div>
+
+      <div class="subbar-right">
+        <button class="action-badge-btn wishlist-btn" data-nav="wishlist">
+          Lista de deseados (<span id="header-wishlist-count">0</span>)
+        </button>
+        <button class="action-badge-btn cart-btn" data-nav="cart">
+          🛒 Carro (<span id="header-cart-count">0</span>)
+        </button>
+
+        <div class="search-wrapper">
+          <input
+            type="text"
+            id="global-search-input"
+            placeholder="buscar en la tienda..."
+            autocomplete="off"
+          />
+          <button class="search-submit" id="global-search-btn" aria-label="Buscar">🔍</button>
+          <div class="search-dropdown hidden" id="search-dropdown"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR DE NOTIFICACIONES TOAST -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- CONTENIDO PRINCIPAL DINÁMICO -->
+  <main class="main-content">
+
+    <!-- ==================== VISTA 1: TIENDA ==================== -->
+    <section id="view-store" class="view-section active">
+      <!-- HERO / DESTACADOS Y RECOMENDADOS -->
+      <div class="container section-block" id="featured-section">
+        <div class="section-header">
+          <h2>DESTACADOS Y RECOMENDADOS</h2>
+          <span class="section-hint">Pasa el cursor sobre las miniaturas para previsualizar</span>
+        </div>
+
+        <div class="featured-carousel">
+          <button class="carousel-arrow prev" id="carousel-prev" aria-label="Anterior">‹</button>
+
+          <div class="featured-card" id="featured-card">
+            <div class="featured-main-media">
+              <img id="featured-main-img" src="" alt="Portada destacada" />
+              <div class="media-badge" id="featured-media-badge">DESTACADO</div>
+            </div>
+
+            <div class="featured-info-panel">
+              <div>
+                <h3 class="featured-title" id="featured-title">Título del Juego</h3>
+                <div class="featured-thumbs" id="featured-thumbs"></div>
+                <p class="featured-subtitle" id="featured-subtitle">Ya disponible • Muy popular</p>
+                <div class="tag-row" id="featured-tags"></div>
+              </div>
+
+              <div class="featured-bottom">
+                <div class="price-block" id="featured-price-block"></div>
+                <div class="featured-cta-row">
+                  <button class="btn-steam-green" id="featured-add-cart">Añadir al carro</button>
+                  <button class="btn-steam-blue" id="featured-wishlist">♡ Deseados</button>
+                  <button class="btn-steam-dark" id="featured-details">Ver ficha</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="carousel-arrow next" id="carousel-next" aria-label="Siguiente">›</button>
+        </div>
+
+        <div class="carousel-dots" id="carousel-dots"></div>
+      </div>
+
+      <!-- OFERTAS ESPECIALES -->
+      <div class="container section-block" id="offers-section">
+        <div class="section-header">
+          <h2>OFERTAS ESPECIALES</h2>
+          <div class="deal-timer">Oferta del día termina en <span id="deal-countdown">14:38:22</span></div>
+        </div>
+        <div class="offers-grid" id="offers-grid"></div>
+      </div>
+
+      <!-- CATÁLOGO COMPLETO CON VISTA PREVIA LATERAL -->
+      <div class="container section-block" id="catalog-section">
+        <div class="catalog-tabs">
+          <button class="tab-btn active" data-tab="popular">Novedades populares</button>
+          <button class="tab-btn" data-tab="bestsellers">Lo más vendido</button>
+          <button class="tab-btn" data-tab="toprated">Mejor valorados</button>
+          <button class="tab-btn" data-tab="all">Todo el catálogo</button>
+        </div>
+
+        <div class="catalog-controls">
+          <div class="genre-pills" id="genre-pills"></div>
+          <div class="catalog-sort-group">
+            <label class="checkbox-inline">
+              <input type="checkbox" id="filter-only-deals" />
+              Solo ofertas
+            </label>
+            <select id="catalog-sort" class="steam-select">
+              <option value="relevance">Ordenar por: Relevancia</option>
+              <option value="price-asc">Precio: menor a mayor</option>
+              <option value="price-desc">Precio: mayor a menor</option>
+              <option value="discount">Mayor descuento</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="catalog-split">
+          <div class="catalog-list" id="catalog-list"></div>
+
+          <aside class="catalog-preview" id="catalog-preview">
+            <h3 id="preview-title">Selecciona un juego</h3>
+            <div class="preview-rating-box">
+              <div class="rating-label">Reseñas de los usuarios:</div>
+              <div class="rating-value" id="preview-rating">Muy positivas (94%)</div>
+            </div>
+            <div class="tag-row" id="preview-tags"></div>
+            <div class="preview-screenshots" id="preview-screenshots"></div>
+            <button class="btn-steam-blue full-width" id="preview-open-detail">Abrir página de la tienda</button>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VISTA 2: CARRO DE COMPRAS ==================== -->
+    <section id="view-cart" class="view-section">
+      <div class="container section-block">
+        <div class="breadcrumb">
+          <button class="link-btn" data-nav="store">Todos los productos</button> › <span>Tu carro de compras</span>
+        </div>
+        <h1 class="page-title">TU CARRO DE COMPRAS</h1>
+
+        <div class="cart-layout">
+          <div class="cart-items-col">
+            <div id="cart-items-container"></div>
+
+            <div class="cart-footer-actions" id="cart-footer-actions">
+              <button class="btn-steam-blue" data-nav="store">Seguir comprando</button>
+              <button class="btn-steam-danger" id="btn-clear-cart">Eliminar todos los artículos</button>
+            </div>
+          </div>
+
+          <aside class="cart-summary-col">
+            <div class="summary-card">
+              <h3>RESUMEN DEL PEDIDO</h3>
+
+              <div class="coupon-box">
+                <label for="coupon-input">Código promocional (ej. <code>STEAM15</code> o <code>BIENVENIDO10</code>)</label>
+                <div class="coupon-row">
+                  <input type="text" id="coupon-input" placeholder="Introduce tu código" />
+                  <button class="btn-steam-blue" id="btn-apply-coupon">Aplicar</button>
+                </div>
+                <p class="coupon-feedback" id="coupon-feedback"></p>
+              </div>
+
+              <div class="gift-box">
+                <label class="radio-option">
+                  <input type="radio" name="purchase-type" value="self" checked />
+                  Comprar para mi cuenta
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="purchase-type" value="gift" />
+                  Comprar como regalo para un amigo
+                </label>
+                <div class="gift-fields hidden" id="gift-fields">
+                  <input type="text" id="gift-recipient" placeholder="Nombre de usuario de Steam del destinatario" />
+                  <textarea id="gift-message" rows="2" placeholder="Escribe un mensaje personalizado..."></textarea>
+                </div>
+              </div>
+
+              <div class="totals-list">
+                <div class="total-row">
+                  <span>Subtotal</span>
+                  <span id="cart-subtotal">$0.00</span>
+                </div>
+                <div class="total-row discount-text hidden" id="cart-coupon-row">
+                  <span>Cupón aplicado</span>
+                  <span id="cart-coupon-amount">-$0.00</span>
+                </div>
+                <div class="total-row grand-total">
+                  <span>Total estimado</span>
+                  <span id="cart-total">$0.00</span>
+                </div>
+              </div>
+
+              <div class="payment-method-box">
+                <label for="payment-method">Método de pago:</label>
+                <select id="payment-method" class="steam-select full-width">
+                  <option value="wallet">Cartera de Steam (Saldo disponible)</option>
+                  <option value="card">Tarjeta Visa / Mastercard (Simulada)</option>
+                </select>
+              </div>
+
+              <button class="btn-steam-green full-width large-btn" id="btn-checkout">
+                Finalizar compra ahora
+              </button>
+              <p class="tax-note">Todos los precios incluyen IVA cuando corresponda. Entrega digital inmediata en tu Biblioteca.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VISTA 3: BIBLIOTECA ==================== -->
+    <section id="view-library" class="view-section">
+      <div class="container section-block">
+        <div class="library-shell">
+          <aside class="library-sidebar">
+            <div class="library-sidebar-top">
+              <h3>MIS JUEGOS (<span id="library-total-count">0</span>)</h3>
+              <input type="text" id="library-search" placeholder="Filtrar biblioteca..." />
+            </div>
+            <div class="library-game-list" id="library-game-list"></div>
+          </aside>
+
+          <div class="library-main" id="library-main-panel">
+            <!-- Renderizado dinámicamente -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VISTA 4: LISTA DE DESEADOS ==================== -->
+    <section id="view-wishlist" class="view-section">
+      <div class="container section-block">
+        <div class="wishlist-header-bar">
+          <div>
+            <h1 class="page-title">LISTA DE DESEADOS DE GAMERPRO_LATAM</h1>
+            <p class="muted-text">Recibe avisos cuando los títulos de tu lista entren en oferta.</p>
+          </div>
+          <button class="btn-steam-blue" data-nav="store">Explorar más juegos</button>
+        </div>
+        <div id="wishlist-container"></div>
+      </div>
+    </section>
+
+    <!-- ==================== VISTA 5: COMUNIDAD ==================== -->
+    <section id="view-community" class="view-section">
+      <div class="container section-block">
+        <h1 class="page-title">ACTIVIDAD DE LA COMUNIDAD</h1>
+        <p class="muted-text">Reseñas verificadas, guías y opiniones de jugadores de Steam.</p>
+
+        <div class="community-grid">
+          <div class="community-feed" id="community-feed"></div>
+
+          <aside class="community-composer">
+            <h3>PUBLICAR UNA RESEÑA</h3>
+            <label for="review-game-select">Selecciona un juego:</label>
+            <select id="review-game-select" class="steam-select full-width"></select>
+
+            <div class="recommend-toggle">
+              <button type="button" class="rec-btn active" id="rec-yes">👍 Recomiendo</button>
+              <button type="button" class="rec-btn" id="rec-no">👎 No recomiendo</button>
+            </div>
+
+            <textarea id="review-text-input" rows="5" placeholder="Describe lo que te gustó o no de este juego..."></textarea>
+            <button class="btn-steam-green full-width" id="btn-submit-review">Publicar reseña</button>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VISTA 6: CARTERA STEAM ==================== -->
+    <section id="view-wallet" class="view-section">
+      <div class="container section-block">
+        <h1 class="page-title">CARTERA DE STEAM</h1>
+        <p class="muted-text">Añade fondos a tu cuenta para comprar juegos y contenido descargable al instante.</p>
+
+        <div class="wallet-layout">
+          <div class="wallet-funds-list">
+            <div class="fund-option-card">
+              <div>
+                <h4>Añadir $5.00 USD</h4>
+                <p>Nivel mínimo de recarga</p>
+              </div>
+              <button class="btn-steam-green" data-add-funds="5">Añadir fondos</button>
+            </div>
+            <div class="fund-option-card">
+              <div>
+                <h4>Añadir $10.00 USD</h4>
+                <p>Ideal para ofertas indie</p>
+              </div>
+              <button class="btn-steam-green" data-add-funds="10">Añadir fondos</button>
+            </div>
+            <div class="fund-option-card">
+              <div>
+                <h4>Añadir $25.00 USD</h4>
+                <p>Opción más popular</p>
+              </div>
+              <button class="btn-steam-green" data-add-funds="25">Añadir fondos</button>
+            </div>
+            <div class="fund-option-card">
+              <div>
+                <h4>Añadir $50.00 USD</h4>
+                <p>Perfecto para lanzamientos AAA</p>
+              </div>
+              <button class="btn-steam-green" data-add-funds="50">Añadir fondos</button>
+            </div>
+            <div class="fund-option-card">
+              <div>
+                <h4>Añadir $100.00 USD</h4>
+                <p>Recarga máxima recomendada</p>
+              </div>
+              <button class="btn-steam-green" data-add-funds="100">Añadir fondos</button>
+            </div>
+          </div>
+
+          <aside class="wallet-sidebar">
+            <div class="summary-card">
+              <h3>TU CUENTA</h3>
+              <div class="wallet-big-balance" id="wallet-page-balance">$60.00 USD</div>
+              <p class="muted-text">Saldo disponible para compras en la tienda.</p>
+
+              <hr class="steam-divider" />
+
+              <h4>Canjear tarjeta de regalo</h4>
+              <p class="small-note">Prueba el código promocional: <code>STEAM2026</code></p>
+              <div class="coupon-row">
+                <input type="text" id="giftcard-code-input" placeholder="Código de cartera" />
+                <button class="btn-steam-blue" id="btn-redeem-giftcard">Canjear</button>
+              </div>
+
+              <hr class="steam-divider" />
+              <h4>Historial reciente</h4>
+              <ul class="tx-history" id="wallet-tx-history"></ul>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL FICHA DETALLADA DEL JUEGO -->
+  <div class="modal-backdrop hidden" id="product-modal">
+    <div class="modal-box product-modal-box">
+      <button class="modal-close" id="close-product-modal" aria-label="Cerrar">✕</button>
+      <div id="product-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- MODAL RECIBO DE COMPRA -->
+  <div class="modal-backdrop hidden" id="receipt-modal">
+    <div class="modal-box receipt-modal-box">
+      <button class="modal-close" id="close-receipt-modal" aria-label="Cerrar">✕</button>
+      <div id="receipt-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="steam-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">VALVE / STEAM CLONE UI</div>
+      <p>© 2026 Tienda Digital estilo Steam. Proyecto web interactivo en HTML, CSS y JavaScript puro listo para GitHub Pages.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
